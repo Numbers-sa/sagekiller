@@ -15,7 +15,7 @@ import { send_refresh_token } from "./sent_refresh_token/send_refresh_token";
 //resolvers
 import { UserResolver } from "./resolvers/accounting/UserResolver";
 import { InvoiceResolver } from "./resolvers/accounting/InvoiceResolver";
-// import { QuotationResolver } from "./resolvers/accounting/QuotationResolver";
+import { QuotationResolver } from "./resolvers/accounting/QuotationResolver";
 // import { CompanyResolver } from "./resolvers/accounting/CompanyResolver";
 
 (async () => {
@@ -65,7 +65,8 @@ import { InvoiceResolver } from "./resolvers/accounting/InvoiceResolver";
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        dbName: "Numberz_Cloud_Accounting"
+        dbName: "Numberz_Cloud_Accounting",
+        useFindAndModify: false
       }
     );
   } catch (error) {
@@ -75,7 +76,7 @@ import { InvoiceResolver } from "./resolvers/accounting/InvoiceResolver";
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, InvoiceResolver]
+      resolvers: [UserResolver, InvoiceResolver, QuotationResolver]
     }),
     //context
     context: ({ req, res }) => ({ req, res })

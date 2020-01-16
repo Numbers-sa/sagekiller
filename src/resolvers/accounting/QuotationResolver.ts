@@ -1,44 +1,60 @@
-import {Resolver, Mutation, Query, Arg} from 'type-graphql';
-import {Quotation} from '../../entity/accounting/Quotation';
+import {
+  Resolver,
+  Mutation,
+  Query,
+  Arg,
+  UseMiddleware,
+  Ctx
+} from "type-graphql";
+import { Quotation, QuotationModel } from "../../entity/accounting/Quotation";
+import { QuotationInput } from "./types/quotation_input";
+import { isAuth } from "../../middleware/is_auth_middleware";
+import { MyContext } from "src/context/my_context";
 
 @Resolver()
 export class QuotationResolver {
-  @Query(() => String)
-  testing() {
-    return 'hi';
+  @Query(() => [Quotation!])
+  @UseMiddleware(isAuth)
+  async quotations(@Ctx() { payload }: MyContext) {
+    const quotations = await QuotationModel.find({ clientId: payload?.userId });
+    return quotations;
   }
 
-  @Mutation(() => Quotation)
+  @Mutation(() => [Quotation!]!)
+  @UseMiddleware(isAuth)
   async createQuotation(
-    @Arg('quotation_no') quotation_no: number,
-    @Arg('quotation_date') quotation_date: string,
-    @Arg('clientId') clientId: string,
-    @Arg('customer') customer: string,
-    @Arg('deviceId') deviceId: string,
-    @Arg('vat_amount') vat_amount: number,
-    @Arg('total_excluding') total_excluding: number,
-    @Arg('total_including') total_including: number,
+    @Ctx() { payload }: MyContext,
+    @Arg("quotation") quoattionInput: QuotationInput
   ) {
-    await Quotation.insert({
-      quotation_no,
-      quotation_date,
-      customer,
-      deviceId,
-      vat_amount,
-      total_excluding,
-      total_including,
-      clientId,
-    });
+    try {
+      const quotation = await new QuotationModel({
+        ...quoattionInput,
+        clientId: payload?.userId
+      });
 
-    return {
-      quotation_no,
-      quotation_date,
-      customer,
-      deviceId,
-      vat_amount,
-      total_excluding,
-      total_including,
-      clientId,
-    };
+      return quotation.save();
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async update_quotation(
+    @Ctx() { payload }: MyContext,
+    @Arg("quotation_no") quotation_no: number
+  ) {
+    const quotationUpdate = QuotationModel.findOneAndUpdate(
+      {
+        quotation_no: quotation_no,
+        userId: payload?.userId
+      },
+      {
+        new: true
+      }
+    );
+
+    return quotationUpdate;
   }
 }

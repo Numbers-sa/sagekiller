@@ -1,6 +1,7 @@
-import { prop as Property, getModelForClass } from "@typegoose/typegoose";
+import { prop as Property, getModelForClass, Ref } from "@typegoose/typegoose";
 // import { ObjectId } from "mongodb";
 import { Field, ObjectType } from "type-graphql";
+import { User } from "./User";
 
 @ObjectType()
 export class Quotation {
@@ -16,9 +17,9 @@ export class Quotation {
   @Property()
   customer: string;
 
-  @Field()
-  @Property()
-  clientId: string;
+  @Field(() => User)
+  @Property({ ref: User, required: true })
+  clientId: Ref<User>;
 
   @Field()
   @Property()
