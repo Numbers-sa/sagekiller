@@ -18,9 +18,10 @@ export class QuotationResolver {
   async quotations(@Ctx() { payload }: MyContext) {
     const quotations = await QuotationModel.find({ clientId: payload?.userId });
     return quotations;
+    
   }
 
-  @Mutation(() => [Quotation!]!)
+  @Mutation(() => Quotation)
   @UseMiddleware(isAuth)
   async createQuotation(
     @Ctx() { payload }: MyContext,
