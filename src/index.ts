@@ -47,7 +47,7 @@ import { QuotationResolver } from "./resolvers/accounting/QuotationResolver";
     if (user.tokenVersion !== payload.tokenVersion) {
       return res.send({
         ok: false,
-        accessToken: ""
+        accessToken: "",
       });
     }
 
@@ -66,7 +66,7 @@ import { QuotationResolver } from "./resolvers/accounting/QuotationResolver";
         useNewUrlParser: true,
         useUnifiedTopology: true,
         dbName: "Numberz_Cloud_Accounting",
-        useFindAndModify: false
+        useFindAndModify: false,
       }
     );
   } catch (error) {
@@ -76,10 +76,11 @@ import { QuotationResolver } from "./resolvers/accounting/QuotationResolver";
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, InvoiceResolver, QuotationResolver]
+      resolvers: [UserResolver, InvoiceResolver, QuotationResolver],
+      validate: false, //remember to enable this feature when decoraters are used
     }),
     //context
-    context: ({ req, res }) => ({ req, res })
+    context: ({ req, res }) => ({ req, res }),
   });
 
   apolloServer.applyMiddleware({ app });
