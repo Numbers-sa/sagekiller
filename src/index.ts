@@ -16,6 +16,7 @@ import { send_refresh_token } from "./sent_refresh_token/send_refresh_token";
 import { UserResolver } from "./resolvers/accounting/UserResolver";
 import { InvoiceResolver } from "./resolvers/accounting/InvoiceResolver";
 import { QuotationResolver } from "./resolvers/accounting/QuotationResolver";
+import { CustomerResovler } from "./resolvers/accounting/CustomerResolver";
 // import { CompanyResolver } from "./resolvers/accounting/CompanyResolver";
 
 (async () => {
@@ -70,13 +71,20 @@ import { QuotationResolver } from "./resolvers/accounting/QuotationResolver";
       }
     );
   } catch (error) {
+    //if unable to connect it should connect to my machines database for
+
     console.log(error);
     throw error;
   }
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, InvoiceResolver, QuotationResolver],
+      resolvers: [
+        UserResolver,
+        InvoiceResolver,
+        QuotationResolver,
+        CustomerResovler,
+      ],
       validate: false, //remember to enable this feature when decoraters are used
     }),
     //context

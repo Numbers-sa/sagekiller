@@ -40,21 +40,27 @@ export class QuotationResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseMiddleware(isAuth)
+  // @UseMiddleware(isAuth)
   async update_quotation(
     @Ctx() { payload }: MyContext,
-    @Arg("quotation_no") quotation_no: number
+    @Arg("quotation_no") quotation_no: number,
+    @Arg("quotation") quotationInput: QuotationInput
   ) {
-    const quotationUpdate = QuotationModel.findOneAndUpdate(
-      {
-        quotation_no: quotation_no,
-        userId: payload?.userId,
-      },
-      {
-        new: true,
-      }
-    );
+    try {
+      const quotationUpdate = await QuotationModel.findOneAndUpdate(
+        { quotation_no: quotation_no, userId: payload?.userId },
+        {
+          ...quotationInput,
+        },
+        {
+          new: true,
+        }
+      );
 
-    return quotationUpdate;
+      console.log(quotationUpdate);
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
   }
 }

@@ -28,47 +28,34 @@ export class InvoiceResolver {
      @Arg("invoice_no") invoice_no: number
  ): {}; */
 
-  @Mutation(() => Invoice)
-  @UseMiddleware(isAuth)
+  @Mutation(() => Boolean)
+  // @UseMiddleware(isAuth)
   async update_invoice(
     @Ctx() { payload }: MyContext,
     @Arg("invoice_no") invoice_no: number,
-    @Arg("invoice_date") invoice_date: string,
-    @Arg("customer") customer: string,
-    @Arg("vat_amount") vat_amount: number,
-    @Arg("total_excluding") total_excluding: number,
-    @Arg("total_including") total_including: number
-
-    // @Arg("update_invoice") update_invoice: InvoiceInput
-  ): Promise<Invoice> {
+    @Arg("update_invoice") update_invoice: InvoiceInput
+  ) {
     try {
       const updateInvoice = await InvoiceModel.findOneAndUpdate(
         { invoice_no: invoice_no, userId: payload?.userId },
         {
-          invoice_date,
-          customer,
-          vat_amount,
-          total_excluding,
-          total_including,
+          ...update_invoice,
         },
         { new: true }
       );
 
       console.log(updateInvoice);
+      return updateInvoice;
     } catch (error) {
       console.log(error);
       throw error;
     }
-
-    return new Invoice();
   }
 
   @Mutation(() => Invoice)
   @UseMiddleware(isAuth)
   async createInvoice(
     @Ctx() { payload }: MyContext,
-    // @Arg("clientId") clientId: string,
-
     @Arg("invoiceInput") invoiceInput: InvoiceInput
   ): Promise<Invoice> {
     try {
