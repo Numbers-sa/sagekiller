@@ -6,7 +6,12 @@ import { CustomerInput } from "./types/customer_input";
 export class CustomerResovler {
   @Query(() => [Customer!]!)
   async customers(@Arg("clientId") clientId: string) {
-    return await CustomerModel.find({ clientId });
+    try {
+      return await CustomerModel.find({ clientId });
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
   }
 
   @Mutation(() => Customer)
@@ -39,5 +44,25 @@ export class CustomerResovler {
     );
 
     console.log(updateCustomer);
+  }
+
+  @Mutation(() => Boolean)
+  async delete_customer(
+    @Arg("code") code: string,
+    @Arg("clientId") clientId: string
+  ) {
+    const deleteCustomer = await CustomerModel.findOneAndDelete(
+      { code: code, clientId: clientId },
+      (err, docs) => {
+        if (err) {
+          console.log(err);
+          throw err;
+        } else {
+          console.log(docs);
+        }
+      }
+    );
+    console.log(deleteCustomer);
+    return true;
   }
 }

@@ -17,6 +17,7 @@ import { UserResolver } from "./resolvers/accounting/UserResolver";
 import { InvoiceResolver } from "./resolvers/accounting/InvoiceResolver";
 import { QuotationResolver } from "./resolvers/accounting/QuotationResolver";
 import { CustomerResovler } from "./resolvers/accounting/CustomerResolver";
+import { ItemResolver } from "./resolvers/accounting/ItemResolver";
 // import { CompanyResolver } from "./resolvers/accounting/CompanyResolver";
 
 (async () => {
@@ -84,6 +85,7 @@ import { CustomerResovler } from "./resolvers/accounting/CustomerResolver";
         InvoiceResolver,
         QuotationResolver,
         CustomerResovler,
+        ItemResolver,
       ],
       validate: false, //remember to enable this feature when decoraters are used
     }),
@@ -92,7 +94,7 @@ import { CustomerResovler } from "./resolvers/accounting/CustomerResolver";
   });
 
   apolloServer.applyMiddleware({ app });
-  app.listen(4000, () => {
-    console.log("express server running on localhost:4000");
+  app.listen(4250, () => {
+    console.log("express server running on localhost:4250");
   });
 })();

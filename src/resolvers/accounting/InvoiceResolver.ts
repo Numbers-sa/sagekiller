@@ -28,16 +28,17 @@ export class InvoiceResolver {
      @Arg("invoice_no") invoice_no: number
  ): {}; */
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Invoice)
   // @UseMiddleware(isAuth)
   async update_invoice(
-    @Ctx() { payload }: MyContext,
+    // @Ctx() { payload }: MyContext,
     @Arg("invoice_no") invoice_no: number,
+    @Arg("clientId") clientId: string,
     @Arg("update_invoice") update_invoice: InvoiceInput
   ) {
     try {
       const updateInvoice = await InvoiceModel.findOneAndUpdate(
-        { invoice_no: invoice_no, userId: payload?.userId },
+        { invoice_no: invoice_no, clientId: clientId },
         {
           ...update_invoice,
         },
