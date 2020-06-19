@@ -13,6 +13,9 @@ export class InvoiceInput implements Partial<Invoice> {
   customer: string;
 
   @Field()
+  clientId: string;
+
+  @Field()
   deviceId: string;
 
   @Field()

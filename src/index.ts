@@ -6,6 +6,7 @@ import { buildSchema } from "type-graphql";
 import { connect } from "mongoose";
 import { verify } from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import { UserModel } from "./entity/accounting/User";
 
 //authentication
@@ -22,6 +23,12 @@ import { ItemResolver } from "./resolvers/accounting/ItemResolver";
 
 (async () => {
   const app = express();
+  app.use(
+    cors({
+      origin: "http://localhost:8081",
+      credentials: true,
+    })
+  );
   app.use(cookieParser());
   app.get("/", (_req, res) => res.send("hello"));
 
@@ -93,7 +100,7 @@ import { ItemResolver } from "./resolvers/accounting/ItemResolver";
     context: ({ req, res }) => ({ req, res }),
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app, cors: false });
   app.listen(4250, () => {
     console.log("express server running on localhost:4250");
   });
