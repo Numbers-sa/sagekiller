@@ -11,6 +11,9 @@ export class QuotationInput implements Partial<Quotation> {
 
   @Field()
   customer: string;
+  //
+  // @Field()
+  // clientId: string;
 
   @Field()
   deviceId: string;
