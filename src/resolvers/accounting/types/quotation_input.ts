@@ -3,7 +3,7 @@ import { Quotation } from "../../../entity/accounting/Quotation";
 
 @InputType()
 export class QuotationInput implements Partial<Quotation> {
-  @Field()
+  @Field({ nullable: true })
   quotation_no: number;
 
   @Field()
@@ -11,6 +11,9 @@ export class QuotationInput implements Partial<Quotation> {
 
   @Field()
   customer: string;
+  //
+  // @Field()
+  // clientId: string;
 
   @Field()
   deviceId: string;

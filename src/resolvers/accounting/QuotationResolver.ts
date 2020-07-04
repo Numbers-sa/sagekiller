@@ -4,7 +4,7 @@ import {
   Query,
   Arg,
   UseMiddleware,
-  Ctx
+  Ctx,
 } from "type-graphql";
 import { Quotation, QuotationModel } from "../../entity/accounting/Quotation";
 import { QuotationInput } from "./types/quotation_input";
@@ -18,19 +18,18 @@ export class QuotationResolver {
   async quotations(@Ctx() { payload }: MyContext) {
     const quotations = await QuotationModel.find({ clientId: payload?.userId });
     return quotations;
-    
   }
 
   @Mutation(() => Quotation)
   @UseMiddleware(isAuth)
   async createQuotation(
     @Ctx() { payload }: MyContext,
-    @Arg("quotation") quoattionInput: QuotationInput
+    @Arg("quotation") quotationInput: QuotationInput
   ) {
     try {
       const quotation = await new QuotationModel({
-        ...quoattionInput,
-        clientId: payload?.userId
+        ...quotationInput,
+        clientId: payload?.userId,
       });
 
       return quotation.save();
@@ -41,21 +40,27 @@ export class QuotationResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseMiddleware(isAuth)
+  // @UseMiddleware(isAuth)
   async update_quotation(
     @Ctx() { payload }: MyContext,
-    @Arg("quotation_no") quotation_no: number
+    @Arg("quotation_no") quotation_no: number,
+    @Arg("quotation") quotationInput: QuotationInput
   ) {
-    const quotationUpdate = QuotationModel.findOneAndUpdate(
-      {
-        quotation_no: quotation_no,
-        userId: payload?.userId
-      },
-      {
-        new: true
-      }
-    );
+    try {
+      const quotationUpdate = await QuotationModel.findOneAndUpdate(
+        { quotation_no: quotation_no, userId: payload?.userId },
+        {
+          ...quotationInput,
+        },
+        {
+          new: true,
+        }
+      );
 
-    return quotationUpdate;
+      console.log(quotationUpdate);
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
   }
 }

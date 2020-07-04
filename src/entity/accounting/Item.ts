@@ -1,8 +1,11 @@
 import { prop as Property, getModelForClass } from "@typegoose/typegoose";
 import { Field, ObjectType } from "type-graphql";
+import { ObjectId } from "mongodb";
 
 @ObjectType()
 export class Item {
+  id: ObjectId;
+
   @Field()
   @Property()
   item_type: string;

@@ -4,14 +4,14 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { connect } from "mongoose";
-import { verify } from "jsonwebtoken";
+// import { verify } from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { UserModel } from "./entity/accounting/User";
+// import { UserModel } from "./entity/accounting/User";
 
 //authentication
-import { createAccessToken, createRefreshToken } from "./auth/auth";
-import { send_refresh_token } from "./sent_refresh_token/send_refresh_token";
+// import { createAccessToken, createRefreshToken } from "./auth/auth";
+// import { send_refresh_token } from "./sent_refresh_token/send_refresh_token";
 
 //resolvers
 import { UserResolver } from "./resolvers/accounting/UserResolver";
@@ -23,48 +23,48 @@ import { ItemResolver } from "./resolvers/accounting/ItemResolver";
 
 (async () => {
   const app = express();
-   app.use(
+  app.use(
     cors({
-       origin: "http://localhost:4000",
-       credentials: true,
-     })
-   );
+      origin: "http://localhost:4000",
+      credentials: true,
+    })
+  );
   app.use(cookieParser());
   app.get("/", (_req, res) => res.send("hello"));
 
   //this will send a new token if previous token has expired
-  app.post("/refresh_token", async (req, res) => {
-    const token = req.cookies.tid;
-    if (!token) {
-    }
-
-    //token is valid and
-    //send back access token
-    let payload: any = null;
-    try {
-      payload = verify(token, process.env.REFRESHTOKEN_TOKEN_SECRET!);
-    } catch (error) {
-      console.log(error);
-      return res.send({ ok: false, accessToken: "" });
-    }
-    const user = await UserModel.findOne({ userId: payload.userId });
-
-    if (!user) {
-      return res.send({ ok: false, accessToken: "" });
-    }
-
-    if (user.tokenVersion !== payload.tokenVersion) {
-      return res.send({
-        ok: false,
-        accessToken: "",
-      });
-    }
-
-    //tampering refresh token and creates new refresh token
-    send_refresh_token(res, createRefreshToken(user));
-
-    return res.send({ ok: true, accessToken: createAccessToken(user) });
-  });
+  // app.post("/refresh_token", async (req, res) => {
+  //   const token = req.cookies.tid;
+  //   if (!token) {
+  //   }
+  //
+  //   //token is valid and
+  //   //send back access token
+  //   let payload: any = null;
+  //   try {
+  //     payload = verify(token, process.env.REFRESHTOKEN_TOKEN_SECRET!);
+  //   } catch (error) {
+  //     console.log(error);
+  //     return res.send({ ok: false, accessToken: "" });
+  //   }
+  //   const user = await UserModel.findOne({ userId: payload.userId });
+  //
+  //   if (!user) {
+  //     return res.send({ ok: false, accessToken: "" });
+  //   }
+  //
+  //   if (user.tokenVersion !== payload.tokenVersion) {
+  //     return res.send({
+  //       ok: false,
+  //       accessToken: "",
+  //     });
+  //   }
+  //
+  //   //tampering refresh token and creates new refresh token
+  //   send_refresh_token(res, createRefreshToken(user));
+  //
+  //   return res.send({ ok: true, accessToken: createAccessToken(user) });
+  // });
 
   //server related
 
@@ -100,8 +100,10 @@ import { ItemResolver } from "./resolvers/accounting/ItemResolver";
     context: ({ req, res }) => ({ req, res }),
   });
 
+  const Port = 8000;
+
   apolloServer.applyMiddleware({ app, cors: true });
-  app.listen(4000, () => {
-    console.log("express server running on localhost:4000");
+  app.listen(Port, () => {
+    console.log(`express server running on localhost:${Port}`);
   });
 })();
